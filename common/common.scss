@@ -37,3 +37,12 @@
     }
   }
 }
+
+.headerLink[class*="icon-"] a {
+  display: inline-flex;
+  align-items: center;
+  
+  img, svg {
+    margin-right: 0.45em;
+  }
+}

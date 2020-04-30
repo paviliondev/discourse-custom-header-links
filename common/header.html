@@ -5,6 +5,10 @@
   if (!customHeaderLinks.length) return;
 
   const h = require("virtual-dom").h;
+  const container = Discourse.__container__;
+  const site = container.lookup('site:main');
+  const categories = site.categories;
+  const iconNode = require("discourse-common/lib/icon-library").iconNode;
   const headerLinks = [];
 
   customHeaderLinks.split("|").map(i => {
@@ -16,25 +20,49 @@
     const linkTarget = seg[4] === "self" ? "" : "_blank";
     const keepOnScrollClass = seg[5] === "keep" ? ".keep" : "";
     const linkClass = `.${linkText.trim().toLowerCase().replace(/\s/gi, '-')}`;
+    const icon = seg[6];
+    let iconClass = '';
+    const linkContents = [linkText];
+    
+    if (icon) {      
+      if (icon === 'category' && (linkParts = linkHref.split('/c/')).length > 1) {
+        const category = categories.find(c => c.fullSlug === linkParts[1]);
+        
+        if (category && category.uploaded_logo) {
+          linkContents.unshift(h('img.category-logo', {
+            key: "category-logo",
+            attributes: {
+              src: Discourse.getURL(category.uploaded_logo.url),
+              width: 25,
+              alt: linkTitle
+            }
+          }));
+          iconClass = '.icon-category';
+        }
+      } else {
+        linkContents.unshift(iconNode(icon));
+        iconClass = `.icon-${icon}`;
+      }
+    }
 
     if (!linkTarget) {
       headerLinks.push(
         h(
-          `li.headerLink${deviceClass}${keepOnScrollClass}${linkClass}`,
+          `li.headerLink${deviceClass}${keepOnScrollClass}${linkClass}${iconClass}`,
           h(
             "a",
             {
               title: linkTitle,
               href: linkHref
             },
-            linkText
+            linkContents
           )
         )
       );
     } else {
       headerLinks.push(
         h(
-          `li.headerLink${deviceClass}${keepOnScrollClass}${linkClass}`,
+          `li.headerLink${deviceClass}${keepOnScrollClass}${linkClass}${iconClass}`,
           h(
             "a",
             {
@@ -42,7 +70,7 @@
               href: linkHref,
               target: linkTarget
             },
-            linkText
+            linkContents
           )
         )
       );
