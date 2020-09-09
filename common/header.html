@@ -9,6 +9,7 @@
   const site = container.lookup('site:main');
   const categories = site.categories;
   const iconNode = require("discourse-common/lib/icon-library").iconNode;
+  const getURLWithCDN = require("discourse-common/lib/get-url").getURLWithCDN;
   const headerLinks = [];
 
   customHeaderLinks.split("|").map(i => {
@@ -32,7 +33,7 @@
           linkContents.unshift(h('img.category-logo', {
             key: "category-logo",
             attributes: {
-              src: Discourse.getURL(category.uploaded_logo.url),
+              src: getURLWithCDN(category.uploaded_logo.url),
               width: 25,
               alt: linkTitle
             }
