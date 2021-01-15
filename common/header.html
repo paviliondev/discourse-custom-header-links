@@ -25,10 +25,18 @@
     let iconClass = '';
     const linkContents = [linkText];
     
-    if (icon) {      
-      if (icon === 'category' && (linkParts = linkHref.split('/c/')).length > 1) {
-        const category = categories.find(c => c.fullSlug === linkParts[1]);
+    if (icon) {          
+      if (icon === 'category' || icon === 'bug-report') {
+        let category;
         
+        if (icon === 'category' && (linkParts = linkHref.split('/c/')).length > 1) {
+          category = categories.find(c => c.fullSlug === linkParts[1]);
+        }
+        
+        if (icon === 'bug-report') {
+          category = categories.find(c => c.fullSlug === 'open-source-bug-reports');
+        }
+                
         if (category && category.uploaded_logo) {
           linkContents.unshift(h('img.category-logo', {
             key: "category-logo",
