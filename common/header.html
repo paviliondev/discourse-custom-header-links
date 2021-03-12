@@ -26,15 +26,15 @@
     const linkContents = [linkText];
     
     if (icon) {          
-      if (icon === 'category' || icon === 'bug-report') {
+      if (icon === 'category' || icon === 'bug-report' || icon === 'feature-request') {
         let category;
         
         if (icon === 'category' && (linkParts = linkHref.split('/c/')).length > 1) {
           category = categories.find(c => c.fullSlug === linkParts[1]);
         }
         
-        if (icon === 'bug-report') {
-          category = categories.find(c => c.fullSlug === 'open-source-bug-reports');
+        if (icon === 'bug-report' || icon === 'feature-request') {
+          category = categories.find(c => c.fullSlug === `open-source-${icon}`);
         }
                 
         if (category && category.uploaded_logo) {
